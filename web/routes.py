@@ -1,7 +1,7 @@
 from starlette.routing import Route
 from starlette.responses import JSONResponse
 from starlette.schemas import SchemaGenerator
-from starlette.authentication import requires
+import bcrypt
 from web.models import users
 from web import database
 
@@ -23,11 +23,21 @@ async def homepage(request):
     return JSONResponse({'data': content})
 
 
+async def register(request):
+    data = request.json()
+    password = data.pop('password')
+    query = users.insert().values(**data, password=bcrypt.hashpw(password, bcrypt.gensalt()))
+    await database.execute(query)
+
+    return JSONResponse(status_code=200)
+
+
 async def schema(request):
     return schemas.OpenAPIResponse(request)
 
 
 routes = [
-    Route('/', homepage),
+    Route('/', homepage, methods=['GET']),
+    Route('/register', register, methods=['POST']),
     Route('/schema', endpoint=schema, include_in_schema=False)
 ]

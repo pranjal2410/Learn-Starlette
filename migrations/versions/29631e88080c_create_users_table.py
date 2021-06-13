@@ -5,7 +5,6 @@ Revises:
 Create Date: 2021-06-13 19:58:32.972862
 
 """
-import sqlalchemy
 from alembic import op
 import sqlalchemy as sa
 
@@ -20,12 +19,12 @@ depends_on = None
 def upgrade():
     op.create_table(
         'users',
-        sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, autoincrement=True),
-        sqlalchemy.Column('username', sqlalchemy.String, unique=True),
-        sqlalchemy.Column('password', sqlalchemy.String),
-        sqlalchemy.Column('email', sqlalchemy.String, unique=True),
-        sqlalchemy.Column('age', sqlalchemy.Integer),
-        sqlalchemy.Column('is_admin', sqlalchemy.Boolean, default=False)
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('username', sa.String, unique=True),
+        sa.Column('password', sa.String),
+        sa.Column('email', sa.String, unique=True),
+        sa.Column('age', sa.Integer),
+        sa.Column('is_admin', sa.Boolean, default=False)
     )
 
 
