@@ -1,4 +1,6 @@
-from starlette.applications import Starlette
-from .routes import routes
+from starlette.config import Config
+import databases
+import os
 
-app = Starlette(debug=True, routes=routes)
+config = Config(os.path.join(os.getcwd(), '.env'))
+database = databases.Database(config('DATABASE_URL'))
