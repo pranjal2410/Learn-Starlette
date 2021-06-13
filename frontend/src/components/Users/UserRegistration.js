@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = () => {
     const classes = useStyles();
     const [data, setData] = React.useState({
-        firstName: '',
-        lastName: '',
+        username: '',
+        age: 0,
         email: '',
         password: '',
     });
@@ -68,13 +68,13 @@ const SignUp = () => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                autoComplete="fname"
-                                name="firstName"
+                                autoComplete="username"
+                                name="username"
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="firstName"
-                                label="First Name"
+                                id="username"
+                                label="Username"
                                 onChange={handleChange}
                                 autoFocus
                             />
@@ -84,11 +84,12 @@ const SignUp = () => {
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
+                                id="age"
+                                type="number"
+                                label="Age in years"
+                                name="age"
                                 onChange={handleChange}
-                                autoComplete="lname"
+                                autoComplete="age"
                             />
                         </Grid>
                         <Grid item xs={12}>

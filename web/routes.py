@@ -29,15 +29,19 @@ class Users(HTTPEndpoint):
             {
                 'username': result.get('username'),
                 'email': result.get('email'),
-                'age': result.get('age')
+                'age': result.get('age'),
+                'id': result.get('id')
             } for result in results
         ]
         return JSONResponse({'data': content})
 
     async def post(self, request):
-        data = request.json()
+        data = await request.json()
+        age = data.pop('age')
         password = data.pop('password')
-        query = users.insert().values(**data, password=bcrypt.hashpw(password, bcrypt.gensalt()))
+        query = users.insert().values(**data,
+                                      age=int(age),
+                                      password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).__str__())
         await database.execute(query)
 
         print('Done')
