@@ -1,8 +1,8 @@
 from starlette.routing import Route
 from starlette.responses import JSONResponse
 from starlette.schemas import SchemaGenerator
-from starlette.authentication import requires
 from starlette.endpoints import HTTPEndpoint
+from sqlalchemy import select
 import bcrypt
 from web.models import users
 from web import database
@@ -17,12 +17,15 @@ class Users(HTTPEndpoint):
     async def get(self, request):
         user_id = request.path_params.get('pk', None)
         if user_id:
-            query = users.select(whereclause=users.c.id == user_id)
-            result = await database.execute(query)
+            query = users.select().where(users.c.id == user_id)
+            result = await database.fetch_one(query=query)
+            data = {
+                'username': result.__getitem__('username'),
+                'email': result.__getitem__('email'),
+                'age': result.__getitem__('age')
+            }
 
-            print(result)
-
-            return JSONResponse(status_code=201)
+            return JSONResponse(data, status_code=200)
         query = users.select()
         results = await database.fetch_all(query)
         content = [
@@ -41,11 +44,19 @@ class Users(HTTPEndpoint):
         password = data.pop('password')
         query = users.insert().values(**data,
                                       age=int(age),
-                                      password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).__str__())
+                                      password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'))
         await database.execute(query)
 
-        print('Done')
         return JSONResponse(status_code=200)
+
+    async def delete(self, request):
+        user_id = request.path_params.get('pk', None)
+        await database.execute(users.delete().where(user_id==users.c.id))
+
+
+async def login(request):
+    data = await request.json()
+    result = await database.fetch_one(query=users.c.username == data.get('username'))
 
 
 async def schema(request):

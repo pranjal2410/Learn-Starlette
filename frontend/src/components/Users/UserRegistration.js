@@ -52,7 +52,7 @@ const SignUp = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const response = axios.post(`${process.env.REACT_APP_API_URL}/users`, data)
-            .then(res => res.json())
+            .then(res => res.json)
     }
 
     return (
