@@ -27,7 +27,7 @@ const ThemeContextProvider = (props) => {
             }
         }
     });
-    const [theme, setTheme] = React.useState(lightTheme);
+    const [theme, setTheme] = React.useState(darkTheme);
 
     const toggleTheme = () => {
         setTheme(theme.palette.type==='light'?darkTheme:lightTheme);

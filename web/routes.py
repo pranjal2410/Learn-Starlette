@@ -12,29 +12,8 @@ schemas = SchemaGenerator({
 })
 
 
-async def homepage(request):
-    query = users.select()
-    results = await database.fetch_all(query)
-    content = [
-        {
-            'username': result.get('username'),
-            'email': result.get('email'),
-            'age': result.get('age')
-        } for result in results
-    ]
-    return JSONResponse({'data': content})
-
-
-async def register(request):
-    data = request.json()
-    password = data.pop('password')
-    query = users.insert().values(**data, password=bcrypt.hashpw(password, bcrypt.gensalt()))
-    await database.execute(query)
-
-    return JSONResponse(status_code=200)
-
-
 class Users(HTTPEndpoint):
+
     async def get(self, request):
         user_id = request.path_params.get('pk', None)
         if user_id:
@@ -61,6 +40,7 @@ class Users(HTTPEndpoint):
         query = users.insert().values(**data, password=bcrypt.hashpw(password, bcrypt.gensalt()))
         await database.execute(query)
 
+        print('Done')
         return JSONResponse(status_code=200)
 
 
@@ -69,7 +49,7 @@ async def schema(request):
 
 
 routes = [
-    Route('/users', Users),
+    Route('/users', Users, methods=['GET', 'POST']),
     Route('/users/{pk:int}/', Users),
     Route('/schema', endpoint=schema, include_in_schema=False)
 ]
