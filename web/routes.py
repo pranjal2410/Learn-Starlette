@@ -51,7 +51,7 @@ class Users(HTTPEndpoint):
         payload = {
             'email': data.get('email'),
             'username': data.get('username'),
-            'id': result.__getitem__('id')
+            'id': result
         }
         token = jwt.encode(payload, config('SECRET_KEY'), algorithm='HS256')
 

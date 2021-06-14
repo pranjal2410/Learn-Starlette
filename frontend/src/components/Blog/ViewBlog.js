@@ -14,6 +14,7 @@ import {
     Container,
     Link
 } from '@material-ui/core';
+import {useHistory} from "react-router";
 
 function Copyright() {
     return (
@@ -64,6 +65,13 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const ViewBlog = () => {
     const classes = useStyles();
+    let history = useHistory();
+
+    React.useEffect(() => {
+        if(!sessionStorage.getItem('token'))
+            history.push('/')
+        // eslint-disable-next-line
+    }, [])
 
     return (
         <React.Fragment>
@@ -136,17 +144,6 @@ const ViewBlog = () => {
                     </Grid>
                 </Container>
             </main>
-            {/* Footer */}
-            <footer className={classes.footer}>
-                <Typography variant="h6" align="center" gutterBottom>
-                    Footer
-                </Typography>
-                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                    Something here to give the footer a purpose!
-                </Typography>
-                <Copyright />
-            </footer>
-            {/* End footer */}
         </React.Fragment>
     );
 }

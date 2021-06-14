@@ -52,9 +52,10 @@ const SignUp = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const response = await Axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
+        const response = await Axios.post(`${process.env.REACT_APP_API_URL}/users`, data)
             .then(res => res.data)
         sessionStorage.setItem('token', response.token)
+        history.push('/blog')
     }
 
     return (

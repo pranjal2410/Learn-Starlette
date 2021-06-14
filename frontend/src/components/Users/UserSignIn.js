@@ -59,6 +59,7 @@ const UserSignIn = () => {
             const response = await Axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
                 .then(res => res.data);
             sessionStorage.setItem('token', response.token);
+            history.push('/blog');
         }
         catch(err) {
             setError(true);
