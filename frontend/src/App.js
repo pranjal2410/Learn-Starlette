@@ -3,7 +3,6 @@ import {ThemeContext} from "./context/theme";
 import {
     MuiThemeProvider,
     CssBaseline,
-    Grid,
 } from "@material-ui/core";
 import Routes from "./components/Routes";
 

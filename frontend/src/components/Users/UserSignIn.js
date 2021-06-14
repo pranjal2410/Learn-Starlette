@@ -12,6 +12,7 @@ import {
     FormControlLabel,
     Typography
 } from '@material-ui/core';
+import Axios from "axios";
 import {useHistory} from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +39,32 @@ const UserSignIn = () => {
     const classes = useStyles();
     let history = useHistory();
 
+    const [data, setData] = React.useState({
+        username: '',
+        password: '',
+    });
+
+    const [error, setError] = React.useState(false);
+
+    const handleChange = (event) => {
+        setData({
+            ...data,
+            [event.target.id]: event.target.value
+        });
+    }
+
+    const handleSubmit = async(event) => {
+        event.preventDefault();
+        try {
+            const response = await Axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
+                .then(res => res.data);
+            sessionStorage.setItem('token', response.token);
+        }
+        catch(err) {
+            setError(true);
+        }
+    }
+
     return (
         <Container component="main" maxWidth="xs">
             <div className={classes.paper}>
@@ -47,16 +74,18 @@ const UserSignIn = () => {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} noValidate onSubmit={handleSubmit}>
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="username"
+                        onChange={handleChange}
+                        error={error}
                         autoFocus
                     />
                     <TextField
@@ -67,6 +96,8 @@ const UserSignIn = () => {
                         name="password"
                         label="Password"
                         type="password"
+                        error={error}
+                        onChange={handleChange}
                         id="password"
                         autoComplete="current-password"
                     />
@@ -80,6 +111,7 @@ const UserSignIn = () => {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleSubmit}
                     >
                         Sign In
                     </Button>

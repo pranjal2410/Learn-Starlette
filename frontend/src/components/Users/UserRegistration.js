@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import {LockOutlined} from "@material-ui/icons";
 import Axios from "axios";
-import {motion} from "framer-motion";
 import {useHistory} from "react-router";
 
 const useStyles = makeStyles((theme) => ({
