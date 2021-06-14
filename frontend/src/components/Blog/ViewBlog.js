@@ -55,15 +55,16 @@ const ViewBlog = () => {
     React.useEffect(() => {
         if(!sessionStorage.getItem('token'))
             history.push('/')
-        // Axios.get(`${process.env.REACT_APP_API_URL}/blog`,
-        //     {
-        //         headers: {
-        //             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-        //         }
-        //     })
-        //     .then(res => {
-        //         setCards(res.data);
-        //     })
+        Axios.get(`${process.env.REACT_APP_API_URL}/blog`,
+            {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                }
+            })
+            .then(res => {
+                if(res.data.length)
+                    setCards(res.data);
+            })
         // eslint-disable-next-line
     }, [])
 
@@ -94,6 +95,17 @@ const ViewBlog = () => {
 
     const handleSubmit = async() => {
         console.log(data);
+        let form = new FormData();
+        form.append('blog', data.blog);
+        form.append('image', data.image);
+        await Axios.post(`${process.env.REACT_APP_API_URL}/blog`, form,
+            {
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(res => res.data)
     }
 
     return (

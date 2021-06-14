@@ -19,12 +19,12 @@ async def startup():
 
 
 middleware = [
-    Middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*']),
+    Middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], allow_headers=['*']),
     Middleware(AuthenticationMiddleware,
                backend=JWTAuthenticationBackend(
                        secret_key=config('SECRET_KEY'),
                        prefix='Bearer',
-                       algorithm='HS256'
+                       algorithm='HS256',
     )),
     Middleware(SessionMiddleware, secret_key=config('SECRET_KEY'))
 ]

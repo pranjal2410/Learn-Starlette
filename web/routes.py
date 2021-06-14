@@ -3,6 +3,7 @@ from starlette.responses import JSONResponse
 from starlette.schemas import SchemaGenerator
 from starlette.authentication import requires
 from starlette.endpoints import HTTPEndpoint
+from starlette_jwt import JWTUser
 import jwt
 import bcrypt
 from web.models import users, blogs
@@ -74,16 +75,15 @@ class Blog(HTTPEndpoint):
                 'id': result.get('id'),
                 'created': result.get('created')
             } for result in results
-        ]
+        ] if results else []
 
         return JSONResponse({'data': content})
 
     @requires('authenticated')
     async def post(self, request):
         user = request.user
-        print(user)
+        print(user.payload)
         data = await request.form()
-        print(data)
 
 
 async def login(request):
@@ -110,5 +110,6 @@ routes = [
     Route('/users', Users, methods=['GET', 'POST']),
     Route('/users/{pk:int}/', Users),
     Route('/login', login, methods=['POST']),
+    Route('/blog', Blog, methods=['GET', 'POST']),
     Route('/schema', endpoint=schema, include_in_schema=False)
 ]
