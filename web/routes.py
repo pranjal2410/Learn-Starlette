@@ -83,6 +83,7 @@ class Blog(HTTPEndpoint):
         user = request.user
         print(user)
         data = await request.json()
+        print(data)
 
 
 async def login(request):
