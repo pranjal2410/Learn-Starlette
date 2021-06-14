@@ -12,6 +12,8 @@ import {
 import {LockOutlined} from "@material-ui/icons";
 import Axios from "axios";
 import {useHistory} from "react-router";
+import {setCookie} from "../../cookies";
+import {AuthContext} from "../../context/auth";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = () => {
     const classes = useStyles();
     let history = useHistory();
+    const {setAuth} = React.useContext(AuthContext);
     const [data, setData] = React.useState({
         username: '',
         age: 0,
@@ -54,7 +57,8 @@ const SignUp = () => {
         event.preventDefault();
         const response = await Axios.post(`${process.env.REACT_APP_API_URL}/users`, data)
             .then(res => res.data)
-        sessionStorage.setItem('token', response.token)
+        setCookie(response.token, 'token');
+        setAuth(true);
         history.push('/blog')
     }
 

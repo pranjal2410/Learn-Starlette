@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import {useHistory} from "react-router";
 import Axios from "axios";
+import {getToken} from "../../cookies";
 
 const useStyles = makeStyles((theme) => ({
     heroContent: {
@@ -54,12 +55,12 @@ const ViewBlog = () => {
     const [cards, setCards] = React.useState([])
 
     React.useEffect(() => {
-        if(!sessionStorage.getItem('token'))
+        if(!getToken())
             history.push('/')
         Axios.get(`${process.env.REACT_APP_API_URL}/blog`,
             {
                 headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                    Authorization: `Bearer ${getToken()}`
                 }
             })
             .then(res => {
@@ -91,7 +92,7 @@ const ViewBlog = () => {
         setCards(await Axios.post(`${process.env.REACT_APP_API_URL}/blog`, form,
             {
                 headers: {
-                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${getToken()}`,
                     'Content-Type': 'multipart/form-data'
                 }
             })

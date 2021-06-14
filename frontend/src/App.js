@@ -11,13 +11,16 @@ import {
 import Routes from "./components/Routes";
 import {Brightness4, Brightness7, ExitToApp} from "@material-ui/icons";
 import {useHistory} from "react-router";
+import {AuthContext} from "./context/auth";
 
 const App = () => {
     const {theme, toggleTheme} = React.useContext(ThemeContext);
+    const {auth, setAuth} = React.useContext(AuthContext);
     const history = useHistory();
 
     const handleLogout = () => {
-        sessionStorage.removeItem('token');
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        setAuth(false);
         history.push('/')
     }
 
@@ -32,7 +35,7 @@ const App = () => {
                     <Typography variant="h6" color="inherit" noWrap>
                         Blog posting site
                     </Typography>
-                    {sessionStorage.getItem('token') && (
+                    {auth && (
                         <IconButton color='inherit' onClick={handleLogout} edge="end">
                             <ExitToApp />
                         </IconButton>

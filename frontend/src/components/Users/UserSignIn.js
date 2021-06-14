@@ -14,6 +14,8 @@ import {
 } from '@material-ui/core';
 import Axios from "axios";
 import {useHistory} from "react-router";
+import {setCookie} from "../../cookies";
+import {AuthContext} from "../../context/auth";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 const UserSignIn = () => {
     const classes = useStyles();
     let history = useHistory();
+    const {setAuth} = React.useContext(AuthContext);
 
     const [data, setData] = React.useState({
         username: '',
@@ -58,7 +61,8 @@ const UserSignIn = () => {
         try {
             const response = await Axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
                 .then(res => res.data);
-            sessionStorage.setItem('token', response.token);
+            setCookie(response.token, 'token');
+            setAuth(true);
             history.push('/blog');
         }
         catch(err) {
