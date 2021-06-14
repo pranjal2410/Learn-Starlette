@@ -1,9 +1,6 @@
 import React from 'react';
-import {Camera} from '@material-ui/icons';
 import {
     makeStyles,
-    AppBar,
-    Toolbar,
     Card,
     CardActions,
     CardMedia,
@@ -12,27 +9,11 @@ import {
     Typography,
     Button,
     Container,
-    Link
 } from '@material-ui/core';
 import {useHistory} from "react-router";
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
-    icon: {
-        marginRight: theme.spacing(2),
-    },
     heroContent: {
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(8, 0, 6),
@@ -61,34 +42,34 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 const ViewBlog = () => {
     const classes = useStyles();
     let history = useHistory();
+    const [cards, setCards] = React.useState([1, 2, 3, 4, 5, 6])
 
     React.useEffect(() => {
         if(!sessionStorage.getItem('token'))
             history.push('/')
+        // Axios.get(`${process.env.REACT_APP_API_URL}/blog`,
+        //     {
+        //         headers: {
+        //             'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        //         }
+        //     })
+        //     .then(res => {
+        //         setCards(res.data);
+        //     })
         // eslint-disable-next-line
     }, [])
 
     return (
         <React.Fragment>
-            <AppBar position="relative">
-                <Toolbar>
-                    <Camera className={classes.icon} />
-                    <Typography variant="h6" color="inherit" noWrap>
-                        Album layout
-                    </Typography>
-                </Toolbar>
-            </AppBar>
             <main>
                 {/* Hero unit */}
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
                         <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                            Album layout
+                            Create Blog
                         </Typography>
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
                             Something short and leading about the collection below—its contents, the creator, etc.
