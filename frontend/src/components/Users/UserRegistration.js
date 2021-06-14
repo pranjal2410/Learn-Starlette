@@ -10,7 +10,7 @@ import {
     Link
 } from "@material-ui/core";
 import {LockOutlined} from "@material-ui/icons";
-import axios from "axios";
+import Axios from "axios";
 import {motion} from "framer-motion";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,8 +51,9 @@ const SignUp = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const response = axios.post(`${process.env.REACT_APP_API_URL}/users`, data)
-            .then(res => res.json)
+        const response = await Axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
+            .then(res => res.data)
+        console.log(response);
     }
 
     return (

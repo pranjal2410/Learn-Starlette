@@ -6,7 +6,7 @@ from starlette_jwt import JWTAuthenticationBackend
 from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
-from sqlalchemy.orm import sessionmaker
+from starlette.middleware.sessions import SessionMiddleware
 
 config = Config(os.path.join(os.getcwd(), '.env'))
 database = databases.Database(config('DATABASE_URL'))
@@ -22,7 +22,8 @@ middleware = [
     Middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*']),
     Middleware(AuthenticationMiddleware,
                backend=JWTAuthenticationBackend(
-                       secret_key='a9cb4ea36a5175e2cb840db5fa2210254d25c25d6344ebebd493af00bf922416',
+                       secret_key=config('SECRET_KEY'),
                        prefix='Bearer'
-    ))
+    )),
+    Middleware(SessionMiddleware, secret_key=config('SECRET_KEY'))
 ]

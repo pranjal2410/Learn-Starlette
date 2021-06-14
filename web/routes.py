@@ -2,10 +2,10 @@ from starlette.routing import Route
 from starlette.responses import JSONResponse
 from starlette.schemas import SchemaGenerator
 from starlette.endpoints import HTTPEndpoint
-from sqlalchemy import select
+import jwt
 import bcrypt
 from web.models import users
-from web import database
+from web import database, config
 
 schemas = SchemaGenerator({
     'openapi': '3.0.0', 'info': {'title': 'Learn Starlette API', 'version': '1.0'}
@@ -44,19 +44,31 @@ class Users(HTTPEndpoint):
         password = data.pop('password')
         query = users.insert().values(**data,
                                       age=int(age),
-                                      password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'))
+                                      password=bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode(
+                                          'utf-8'))
         await database.execute(query)
 
         return JSONResponse(status_code=200)
 
     async def delete(self, request):
         user_id = request.path_params.get('pk', None)
-        await database.execute(users.delete().where(user_id==users.c.id))
+        await database.execute(users.delete().where(user_id == users.c.id))
 
 
 async def login(request):
     data = await request.json()
-    result = await database.fetch_one(query=users.c.username == data.get('username'))
+    result = await database.fetch_one(query=users.select().where(users.c.username == data.get('username')))
+    if bcrypt.checkpw(data.get('password').encode('utf-8'), result.__getitem__('password').encode('utf-8')):
+        payload = {
+            'email': result.__getitem__('email'),
+            'username': result.__getitem__('username'),
+            'id': result.__getitem__('id'),
+        }
+        token = jwt.encode(payload, config('SECRET_KEY'), algorithm='HS256')
+
+        return JSONResponse({'token': token}, status_code=200)
+    else:
+        return JSONResponse(status_code=401)
 
 
 async def schema(request):
@@ -66,5 +78,6 @@ async def schema(request):
 routes = [
     Route('/users', Users, methods=['GET', 'POST']),
     Route('/users/{pk:int}/', Users),
+    Route('/login', login, methods=['POST']),
     Route('/schema', endpoint=schema, include_in_schema=False)
 ]
