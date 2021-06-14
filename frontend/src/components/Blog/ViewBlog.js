@@ -48,7 +48,7 @@ const ViewBlog = () => {
     let history = useHistory();
     const [data, setData] = React.useState({
         blog: '',
-        image: null
+        image: []
     });
     const [cards, setCards] = React.useState([1, 2, 3, 4, 5, 6])
 
@@ -68,10 +68,32 @@ const ViewBlog = () => {
     }, [])
 
     const handleChange = (event) => {
-        setData({
-            ...data,
-            [event.target.id]: event.target.value
-        })
+        if(event.target.id==='image') {
+            var file = event.target.files[0];
+            const reader = new FileReader();
+            var url = reader.readAsDataURL(file);
+
+            reader.onloadend = function(e) {
+                setData({
+                    ...data,
+                    image: [reader.result]
+                });
+            }
+            console.log(url);
+            setData({
+                ...data,
+                [event.target.id]: event.target.files[0]
+            })
+        }
+        else
+            setData({
+                ...data,
+                [event.target.id]: event.target.value
+            })
+    }
+
+    const handleSubmit = async() => {
+        console.log(data);
     }
 
     return (
@@ -102,13 +124,23 @@ const ViewBlog = () => {
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
-                                    <Button variant="contained" color="primary">
-                                        Main call to action
-                                    </Button>
+                                    <input
+                                        accept="image/*"
+                                        type="file"
+                                        id="image"
+                                        name="image"
+                                        onChange={handleChange}
+                                        style={{ display: "none" }}
+                                    />
+                                    <label htmlFor="image">
+                                        <Button variant="outlined" color="primary" component="span">
+                                            Upload Image
+                                        </Button>
+                                    </label>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="outlined" color="primary">
-                                        Secondary action
+                                    <Button variant="outlined" color="primary" onClick={handleSubmit}>
+                                        Post Blog
                                     </Button>
                                 </Grid>
                             </Grid>
