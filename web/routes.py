@@ -3,7 +3,7 @@ from starlette.responses import JSONResponse
 from starlette.schemas import SchemaGenerator
 from starlette.authentication import requires
 from starlette.endpoints import HTTPEndpoint
-from starlette_jwt import JWTUser
+import os
 import jwt
 import bcrypt
 from web.models import users, blogs
@@ -68,7 +68,7 @@ class Blog(HTTPEndpoint):
     @requires('authenticated')
     async def get(self, request):
         query = blogs.select()
-        results = await database.execute(query)
+        results = await database.fetch_all(query)
         content = [
             {
                 'text': result.get('text'),
@@ -81,9 +81,24 @@ class Blog(HTTPEndpoint):
 
     @requires('authenticated')
     async def post(self, request):
-        user = request.user
-        print(user.payload)
-        data = await request.form()
+        payload = request.user.payload
+        data = dict(await request.form())
+        image = data.pop('image')
+        path = os.path.join(os.getcwd(), 'media', payload.get('id').__str__())
+        if not os.path.exists(path):
+            os.mkdir(path)
+        img_path = os.path.join(path, f"{data.get('title').split()[0]}.{image.filename.split('.')[-1]}")
+        with open(img_path, 'wb') as file:
+            file.write(await image.read())
+            file.close()
+        query = blogs.insert().values(**data, user_id=payload.get('id'), image=img_path)
+        try:
+            result = await database.execute(query)
+
+            return JSONResponse(status_code=201)
+        except Exception as e:
+
+            return JSONResponse(status_code=500)
 
 
 async def login(request):

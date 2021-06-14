@@ -20,6 +20,7 @@ blogs = sqlalchemy.Table(
     'blogs',
     metadata,
     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, autoincrement=True),
+    sqlalchemy.Column('title', sqlalchemy.String, unique=True),
     sqlalchemy.Column('text', sqlalchemy.Text),
     sqlalchemy.Column('created', sqlalchemy.DateTime, default=datetime.datetime.now()),
     sqlalchemy.Column('image', sqlalchemy.String),

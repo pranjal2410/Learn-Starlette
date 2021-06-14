@@ -47,8 +47,9 @@ const ViewBlog = () => {
     const classes = useStyles();
     let history = useHistory();
     const [data, setData] = React.useState({
+        title: '',
         blog: '',
-        image: []
+        image: null
     });
     const [cards, setCards] = React.useState([1, 2, 3, 4, 5, 6])
 
@@ -62,6 +63,7 @@ const ViewBlog = () => {
                 }
             })
             .then(res => {
+                console.log(res.data)
                 if(res.data.length)
                     setCards(res.data);
             })
@@ -70,17 +72,6 @@ const ViewBlog = () => {
 
     const handleChange = (event) => {
         if(event.target.id==='image') {
-            var file = event.target.files[0];
-            const reader = new FileReader();
-            var url = reader.readAsDataURL(file);
-
-            reader.onloadend = function(e) {
-                setData({
-                    ...data,
-                    image: [reader.result]
-                });
-            }
-            console.log(url);
             setData({
                 ...data,
                 [event.target.id]: event.target.files[0]
@@ -94,9 +85,9 @@ const ViewBlog = () => {
     }
 
     const handleSubmit = async() => {
-        console.log(data);
         let form = new FormData();
-        form.append('blog', data.blog);
+        form.append('title', data.title);
+        form.append('text', data.blog);
         form.append('image', data.image);
         await Axios.post(`${process.env.REACT_APP_API_URL}/blog`, form,
             {
@@ -122,6 +113,15 @@ const ViewBlog = () => {
                             Make it short and sweet, but not too short so folks don&apos;t simply skip over it
                             entirely.
                         </Typography>
+                        <TextField
+                            id='title'
+                            name='title'
+                            label='Blog title'
+                            placeholder='Tite of Blog'
+                            onChange={handleChange}
+                            variant='outlined'
+                            margin='normal'
+                        />
                         <TextField
                             id='blog'
                             name='blog'
