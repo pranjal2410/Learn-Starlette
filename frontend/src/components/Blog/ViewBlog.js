@@ -9,6 +9,7 @@ import {
     Typography,
     Button,
     Container,
+    TextField
 } from '@material-ui/core';
 import {useHistory} from "react-router";
 import Axios from "axios";
@@ -45,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
 const ViewBlog = () => {
     const classes = useStyles();
     let history = useHistory();
+    const [data, setData] = React.useState({
+        blog: '',
+        image: null
+    });
     const [cards, setCards] = React.useState([1, 2, 3, 4, 5, 6])
 
     React.useEffect(() => {
@@ -62,6 +67,13 @@ const ViewBlog = () => {
         // eslint-disable-next-line
     }, [])
 
+    const handleChange = (event) => {
+        setData({
+            ...data,
+            [event.target.id]: event.target.value
+        })
+    }
+
     return (
         <React.Fragment>
             <main>
@@ -76,6 +88,17 @@ const ViewBlog = () => {
                             Make it short and sweet, but not too short so folks don&apos;t simply skip over it
                             entirely.
                         </Typography>
+                        <TextField
+                            id='blog'
+                            name='blog'
+                            rows={5}
+                            variant='outlined'
+                            multiline
+                            label='Create Blog'
+                            onChange={handleChange}
+                            placeholder='Write Something....'
+                            fullWidth
+                        />
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
