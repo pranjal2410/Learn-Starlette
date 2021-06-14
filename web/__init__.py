@@ -23,7 +23,8 @@ middleware = [
     Middleware(AuthenticationMiddleware,
                backend=JWTAuthenticationBackend(
                        secret_key=config('SECRET_KEY'),
-                       prefix='Bearer'
+                       prefix='Bearer',
+                       algorithm='HS256'
     )),
     Middleware(SessionMiddleware, secret_key=config('SECRET_KEY'))
 ]

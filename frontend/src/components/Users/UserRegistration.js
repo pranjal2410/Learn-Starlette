@@ -12,6 +12,7 @@ import {
 import {LockOutlined} from "@material-ui/icons";
 import Axios from "axios";
 import {motion} from "framer-motion";
+import {useHistory} from "react-router";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
     const classes = useStyles();
+    let history = useHistory();
     const [data, setData] = React.useState({
         username: '',
         age: 0,
@@ -53,7 +55,7 @@ const SignUp = () => {
         event.preventDefault();
         const response = await Axios.post(`${process.env.REACT_APP_API_URL}/login`, data)
             .then(res => res.data)
-        console.log(response);
+        sessionStorage.setItem('token', response.token)
     }
 
     return (
@@ -131,7 +133,7 @@ const SignUp = () => {
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
-                            <Link href="#" variant="body2">
+                            <Link onClick={() => history.push('/')} variant="body2">
                                 Already have an account? Sign in
                             </Link>
                         </Grid>
