@@ -51,7 +51,7 @@ const ViewBlog = () => {
         blog: '',
         image: null
     });
-    const [cards, setCards] = React.useState([1, 2, 3, 4, 5, 6])
+    const [cards, setCards] = React.useState([])
 
     React.useEffect(() => {
         if(!sessionStorage.getItem('token'))
@@ -63,9 +63,8 @@ const ViewBlog = () => {
                 }
             })
             .then(res => {
-                console.log(res.data)
-                if(res.data.length)
-                    setCards(res.data);
+                console.log(res.data);
+                setCards(res.data)
             })
         // eslint-disable-next-line
     }, [])
@@ -89,14 +88,14 @@ const ViewBlog = () => {
         form.append('title', data.title);
         form.append('text', data.blog);
         form.append('image', data.image);
-        await Axios.post(`${process.env.REACT_APP_API_URL}/blog`, form,
+        setCards(await Axios.post(`${process.env.REACT_APP_API_URL}/blog`, form,
             {
                 headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            .then(res => res.data)
+            .then(res => res.data))
     }
 
     return (
@@ -119,6 +118,7 @@ const ViewBlog = () => {
                             label='Blog title'
                             placeholder='Tite of Blog'
                             onChange={handleChange}
+                            fullWidth
                             variant='outlined'
                             margin='normal'
                         />
@@ -167,15 +167,15 @@ const ViewBlog = () => {
                                 <Card className={classes.card}>
                                     <CardMedia
                                         className={classes.cardMedia}
-                                        image="https://source.unsplash.com/random"
+                                        image={`${process.env.REACT_APP_API_URL}/${card.image}`}
                                         title="Image title"
                                     />
                                     <CardContent className={classes.cardContent}>
                                         <Typography gutterBottom variant="h5" component="h2">
-                                            Heading
+                                            {card.title}
                                         </Typography>
                                         <Typography>
-                                            This is a media card. You can use this section to describe the content.
+                                            {card.text}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>

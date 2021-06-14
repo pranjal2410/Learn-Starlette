@@ -1,5 +1,6 @@
-from starlette.routing import Route
-from starlette.responses import JSONResponse
+from starlette.routing import Route, Mount
+from starlette.responses import JSONResponse, FileResponse
+from starlette.staticfiles import StaticFiles
 from starlette.schemas import SchemaGenerator
 from starlette.authentication import requires
 from starlette.endpoints import HTTPEndpoint
@@ -38,7 +39,7 @@ class Users(HTTPEndpoint):
                 'id': result.get('id')
             } for result in results
         ]
-        return JSONResponse({'data': content})
+        return JSONResponse(content)
 
     async def post(self, request):
         data = await request.json()
@@ -63,28 +64,34 @@ class Users(HTTPEndpoint):
         await database.execute(users.delete().where(user_id == users.c.id))
 
 
+async def _sendResponse():
+    query = blogs.select()
+    results = await database.fetch_all(query)
+    content = [
+        {
+            'text': result.get('text'),
+            'id': result.get('id'),
+            'created': result.get('created'),
+            'title': result.get('title'),
+            'image': result.get('image')
+        } for result in results
+    ] if results else []
+
+    return content
+
+
 class Blog(HTTPEndpoint):
 
     @requires('authenticated')
     async def get(self, request):
-        query = blogs.select()
-        results = await database.fetch_all(query)
-        content = [
-            {
-                'text': result.get('text'),
-                'id': result.get('id'),
-                'created': result.get('created')
-            } for result in results
-        ] if results else []
-
-        return JSONResponse({'data': content})
+        return JSONResponse(await _sendResponse())
 
     @requires('authenticated')
     async def post(self, request):
         payload = request.user.payload
         data = dict(await request.form())
         image = data.pop('image')
-        path = os.path.join(os.getcwd(), 'media', payload.get('id').__str__())
+        path = os.path.join('media', payload.get('id').__str__())
         if not os.path.exists(path):
             os.mkdir(path)
         img_path = os.path.join(path, f"{data.get('title').split()[0]}.{image.filename.split('.')[-1]}")
@@ -93,9 +100,9 @@ class Blog(HTTPEndpoint):
             file.close()
         query = blogs.insert().values(**data, user_id=payload.get('id'), image=img_path)
         try:
-            result = await database.execute(query)
+            await database.execute(query)
 
-            return JSONResponse(status_code=201)
+            return JSONResponse(await _sendResponse())
         except Exception as e:
 
             return JSONResponse(status_code=500)
@@ -126,5 +133,6 @@ routes = [
     Route('/users/{pk:int}/', Users),
     Route('/login', login, methods=['POST']),
     Route('/blog', Blog, methods=['GET', 'POST']),
+    Mount('/media', app=StaticFiles(directory='media'), name='media'),
     Route('/schema', endpoint=schema, include_in_schema=False)
 ]
