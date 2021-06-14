@@ -82,7 +82,7 @@ class Blog(HTTPEndpoint):
     async def post(self, request):
         user = request.user
         print(user)
-        data = await request.json()
+        data = await request.form()
         print(data)
 
 

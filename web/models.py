@@ -22,5 +22,6 @@ blogs = sqlalchemy.Table(
     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True, autoincrement=True),
     sqlalchemy.Column('text', sqlalchemy.Text),
     sqlalchemy.Column('created', sqlalchemy.DateTime, default=datetime.datetime.now()),
+    sqlalchemy.Column('image', sqlalchemy.String),
     sqlalchemy.Column('user_id', sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id")),
 )
