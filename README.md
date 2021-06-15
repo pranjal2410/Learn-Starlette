@@ -1,5 +1,5 @@
 # Starlette learning repo
-##About
+## About
 Starlette is an ASGI framework used to build asyncio services and for high performance.
 In this project I have used starlette to develop backend for a website which lets users
 register themselves and write blogs and post images related to their blog.<br/>
@@ -27,6 +27,6 @@ SECRET_KEY={any secret key, I recommend to use secrets module of python}<br/>
 <li>Create a .env file and add:<br/>REACT_APP_API_URL={your api url, most likely http://localhost:8000}</li>
 <li>Run the client server using <code>yarn start</code></li>
 
-##References
+## References
 - [Starlette Documentation](https://www.starlette.io/)
 - [UI Templates](https://material-ui.com/getting-started/templates/)
