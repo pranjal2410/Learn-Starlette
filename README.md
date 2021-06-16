@@ -6,7 +6,7 @@ register themselves and write blogs and post images related to their blog.<br/>
 For authentication, I have used <code>starlette-jwt</code> package.<br/>
 I have used PostgreSQL and <code>sqlalchemy</code> package of python for database. Also for database migrations, the starlette
 documentation recommends to use <code>alembic</code>. 
-##Requirements:
+## Requirements:
 <li>Python 3.7+</li>
 <li>Yarn 1.22</li>
 <li>SQL database</li>
